@@ -14,7 +14,6 @@
 package com.alibaba.nacossync.extension.impl;
 
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacossync.cache.SkyWalkerCacheServices;
 import com.alibaba.nacossync.constant.ClusterTypeEnum;
 import com.alibaba.nacossync.constant.SkyWalkerConstants;
@@ -27,6 +26,7 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.LeaseInfo;
 import com.netflix.appinfo.MyDataCenterInfo;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +80,7 @@ public class NacosSyncToEurekaServiceImpl extends AbstractNacosSync {
     public void removeInvalidInstance(TaskDO taskDO, Set<String> invalidInstanceKeys) {
         EurekaNamingService destNamingService = eurekaServerHolder.get(taskDO.getDestClusterId());
         List<InstanceInfo> allInstances = destNamingService.getApplications(taskDO.getServiceName());
-        if (CollectionUtils.isNotEmpty(allInstances)) {
+        if (!CollectionUtils.isEmpty(allInstances)) {
             for (InstanceInfo instance : allInstances) {
                 if (needDelete(instance.getMetadata(), taskDO) && invalidInstanceKeys.contains(
                         composeInstanceKey(instance.getIPAddr(), instance.getPort()))) {

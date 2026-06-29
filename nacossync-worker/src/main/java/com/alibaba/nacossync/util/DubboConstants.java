@@ -12,10 +12,10 @@
  */
 package com.alibaba.nacossync.util;
 
-import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;

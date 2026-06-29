@@ -1,9 +1,9 @@
 package com.alibaba.nacossync.util;
 
-import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.alibaba.nacossync.pojo.model.TaskDO;
 import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

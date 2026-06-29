@@ -5,7 +5,6 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacossync.constant.MetricsStatisticsType;
 import com.alibaba.nacossync.extension.SyncService;
 import com.alibaba.nacossync.extension.holder.NacosServerHolder;
@@ -16,6 +15,7 @@ import com.google.common.base.Stopwatch;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -100,7 +100,7 @@ public abstract class AbstractNacosSync implements SyncService {
         Collection<TaskDO> taskCollections = allSyncTaskMap.values();
         List<TaskDO> taskDOList = new ArrayList<>(taskCollections);
         
-        if (CollectionUtils.isNotEmpty(taskDOList)) {
+        if (!CollectionUtils.isEmpty(taskDOList)) {
             BatchTaskExecutor.batchOperation(taskDOList, this::executeTask);
         }
     }
@@ -219,7 +219,7 @@ public abstract class AbstractNacosSync implements SyncService {
             }
         }
         
-        if (CollectionUtils.isNotEmpty(latestSyncInstance)) {
+        if (!CollectionUtils.isEmpty(latestSyncInstance)) {
             log.info("任务Id:{},已同步实例个数:{}", taskId, latestSyncInstance.size());
             sourceInstanceSnapshot.put(taskId, latestSyncInstance);
         } else {
@@ -237,7 +237,7 @@ public abstract class AbstractNacosSync implements SyncService {
                     .map(instance -> composeInstanceKey(instance.getIp(), instance.getPort()))
                     .collect(Collectors.toSet());
             oldInstanceKeys.removeAll(newInstanceKeys);
-            if (CollectionUtils.isNotEmpty(oldInstanceKeys)) {
+            if (!CollectionUtils.isEmpty(oldInstanceKeys)) {
                 log.info("任务Id:{},移除无效同步实例:{}", taskId, oldInstanceKeys);
                 removeInvalidInstance(taskDO, oldInstanceKeys);
             }

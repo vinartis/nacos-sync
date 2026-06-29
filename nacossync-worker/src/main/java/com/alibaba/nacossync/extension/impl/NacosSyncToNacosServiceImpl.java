@@ -18,7 +18,6 @@ import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.listener.EventListener;
 import com.alibaba.nacos.api.naming.listener.NamingEvent;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import com.alibaba.nacos.common.utils.CollectionUtils;
 import com.alibaba.nacossync.cache.SkyWalkerCacheServices;
 import com.alibaba.nacossync.constant.ClusterTypeEnum;
 import com.alibaba.nacossync.constant.MetricsStatisticsType;
@@ -35,6 +34,7 @@ import com.google.common.base.Stopwatch;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,7 +131,7 @@ public class NacosSyncToNacosServiceImpl implements SyncService, InitializingBea
         Collection<TaskDO> taskCollections = allSyncTaskMap.values();
         List<TaskDO> taskDOList = new ArrayList<>(taskCollections);
         
-        if (CollectionUtils.isNotEmpty(taskDOList)) {
+        if (!CollectionUtils.isEmpty(taskDOList)) {
             BatchTaskExecutor.batchOperation(taskDOList, this::executeTask);
         }
     }
@@ -246,7 +246,7 @@ public class NacosSyncToNacosServiceImpl implements SyncService, InitializingBea
                     getGroupNameOrDefault(taskDO.getGroupName()), new ArrayList<>(), true);
             
             int level = clusterAccessService.findClusterLevel(taskDO.getSourceClusterId());
-            if (CollectionUtils.isNotEmpty(sourceInstances) && sourceInstances.get(0).isEphemeral()) {
+            if (!CollectionUtils.isEmpty(sourceInstances) && sourceInstances.get(0).isEphemeral()) {
                 // Handle batch data synchronization of ephemeral instances, need to get all current service instances.
                 // TODO: When the Client is version 1.x, execute the same synchronization method as persistent instances.
                 handlerPersistenceInstance(taskDO, destNamingService, sourceInstances, level);
@@ -303,7 +303,7 @@ public class NacosSyncToNacosServiceImpl implements SyncService, InitializingBea
                     newInstance);
         }
         
-        if (CollectionUtils.isNotEmpty(invalidInstances)) {
+        if (!CollectionUtils.isEmpty(invalidInstances)) {
             log.info("taskId: {}, service {} deregistered, number of executions: {}", taskDO.getTaskId(), taskDO.getServiceName(),
                     destHasSyncInstances.size());
         }
@@ -367,7 +367,7 @@ public class NacosSyncToNacosServiceImpl implements SyncService, InitializingBea
             return;
         }
         destInstances = filterInstancesForRemoval(destInstances, taskDO.getSourceClusterId());
-        if (CollectionUtils.isNotEmpty(destInstances)) {
+        if (!CollectionUtils.isEmpty(destInstances)) {
             // Deregister each instance one by one. Take one instance at a time.
             // Need to handle redo, otherwise, it will be registered again.
             for (Instance destInstance : destInstances) {

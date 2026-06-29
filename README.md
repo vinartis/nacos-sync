@@ -7,6 +7,13 @@
  - Console: provide API and console for management
  - Worker: provide the service registration synchronization. 
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [使用说明](docs/USAGE.md) | 安装、配置、使用与故障排查详细指南 |
+| [架构决策记录](docs/architecture-decisions/) | ADR 文档，记录重要的技术决策 |
+
 ## Architecture
 
 ### Architecture Topology
@@ -77,9 +84,19 @@ Info |      +------------+                   ^
 Before you begin, install the following:
 
 - 64bit OS: Linux/Unix/Mac/Windows supported, Linux/Unix/Mac recommended.
-- 64bit JDK 1.8+: downloads, JAVA_HOME settings.
+- 64bit JDK 17+: downloads, JAVA_HOME settings.
 - Maven 3.5.2+: [downloads](https://maven.apache.org/download.cgi), [settings](https://maven.apache.org/settings.html).
 - MySql 5.6.+
+
+## Nacos Server Compatibility
+
+| Nacos Server Version | Supported | Notes |
+| -------------------- | --------- | ----- |
+| 3.x                  | Yes       | Fully supported. Requires gRPC port (default `server.port + 1000`, e.g. 9849 for 8848) to be open on the server side. |
+| 2.x                  | Yes       | Fully supported. Requires gRPC port (default `server.port + 1000`) to be open. |
+| 1.x                  | No        | Not supported since nacos-sync upgraded to nacos-client 3.0.1. Nacos 1.x server is incompatible with nacos-client 2.x/3.x. |
+
+> **Note**: Since Nacos 3.2.0+ server removes the v1/v2 HTTP APIs, the old nacos-client 1.x can no longer connect. nacos-sync now uses nacos-client 3.0.1, which talks to the server via gRPC and is compatible with both Nacos 2.x and 3.x servers.
 
 ## Download & Build From Release
 
